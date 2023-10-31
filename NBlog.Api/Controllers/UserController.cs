@@ -56,12 +56,12 @@ public class UserController : ControllerBase
     [HttpPost("[action]")]
     public async Task<IActionResult> Follow([FromBody] FollowReq req)
     {
-        var action = await _userRepository.Follow(req.Action, req.UserId, req.OtherUserId);
-        if (action == FollowAction.Follow)
-            return Ok($"user {req.UserId} has followed {req.OtherUserId} successfully");
-        if (action == FollowAction.Unfollow)
-            return Ok($"user {req.UserId} has unfollowed {req.OtherUserId} successfully");
-
-        return BadRequest("Unknown action");
+        var action = await _userRepository.Follow(req.UserName, req.OtherUserName);
+        return action switch
+        {
+            FollowAction.Follow => Ok($"user {req.UserName} has followed {req.OtherUserName} successfully"),
+            FollowAction.Unfollow => Ok($"user {req.UserName} has unfollowed {req.OtherUserName} successfully"),
+            _ => BadRequest("Unknown action")
+        };
     }
 }
