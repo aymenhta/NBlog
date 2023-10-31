@@ -21,4 +21,32 @@ public class UserRepository : IUserRepository
 
     public async Task<AppUser> GetById(string id)
         => await _userManager.FindByIdAsync(id) ?? throw new ResourceNotFoundException("user could not be found");
+
+    public async Task<FollowAction> Follow(FollowAction action, string userName, string otherUserName)
+    {
+        var user = await GetByName(userName);
+        var otherUser = await GetByName(otherUserName);
+        IdentityResult result;
+        switch (action)
+        {
+            case FollowAction.Follow:
+                user.Following.Add(otherUser);
+                result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                    throw new InvalidOperationException(
+                        $"user '{user.UserName}' could not follow user '{otherUser.UserName}'");
+                break;
+            case FollowAction.Unfollow:
+                user.Following.Remove(otherUser);
+                result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                    throw new InvalidOperationException(
+                        $"user '{user.UserName}' could not unfollow user '{otherUser.UserName}'");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(action), action, null);
+        }
+
+        return action;
+    }
 }

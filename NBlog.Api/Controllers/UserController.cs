@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using NBlog.Api.Dtos;
+using NBlog.Api.Entities;
 using NBlog.Api.Repository;
 
 namespace NBlog.Api.Controllers;
@@ -10,28 +10,27 @@ namespace NBlog.Api.Controllers;
 [Authorize]
 [EnableRateLimiting("token")]
 [ApiController]
-[Route("/Api/V1/[controller]s/{username}")]
+[Route("/Api/V1/[controller]s")]
 public class UserController : ControllerBase
 {
     private readonly ILikeRepository _likeRepository;
     private readonly ILogger<UserController> _logger;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IUserRepository _userRepository;
 
-    public UserController(UserManager<IdentityUser> userManager, ILogger<UserController> logger,
-        ILikeRepository likeRepository)
+    public UserController(ILogger<UserController> logger,
+        ILikeRepository likeRepository,
+        IUserRepository userRepository)
     {
-        _userManager = userManager;
         _logger = logger;
         _likeRepository = likeRepository;
+        _userRepository = userRepository;
     }
 
-    [HttpGet]
+    [HttpGet("{username}")]
     public async Task<IActionResult> GetCurrentUserDetails(string username)
     {
         _logger.LogInformation("fetching user {} details", username);
-        var user = await _userManager.FindByNameAsync(username);
-        if (user is null)
-            return NotFound($"user '{username}' could not be found :/");
+        var user = await _userRepository.GetByName(username);
 
         var res = new UserDetailsDto(
             user.Id,
@@ -45,12 +44,24 @@ public class UserController : ControllerBase
         return Ok(res);
     }
 
-    [HttpGet("[action]")]
+    [HttpGet("{username}/[action]")]
     public async Task<IActionResult> Likes(string username)
     {
         _logger.LogInformation("fetching likes count for user {}", username);
         var res = await _likeRepository.GetLikesCountForUser(username);
         _logger.LogInformation("user {} has {} likes", username, res.Count);
         return Ok(res);
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> Follow([FromBody] FollowReq req)
+    {
+        var action = await _userRepository.Follow(req.Action, req.UserId, req.OtherUserId);
+        if (action == FollowAction.Follow)
+            return Ok($"user {req.UserId} has followed {req.OtherUserId} successfully");
+        if (action == FollowAction.Unfollow)
+            return Ok($"user {req.UserId} has unfollowed {req.OtherUserId} successfully");
+
+        return BadRequest("Unknown action");
     }
 }

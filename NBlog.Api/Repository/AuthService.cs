@@ -36,6 +36,7 @@ public class AuthService : IAuthService
 
         var user = new AppUser
         {
+            Id = Guid.NewGuid().ToString(),
             Email = model.Email,
             UserName = model.Username,
             SecurityStamp = Guid.NewGuid().ToString()
