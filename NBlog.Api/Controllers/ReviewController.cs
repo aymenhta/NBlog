@@ -27,10 +27,10 @@ public class ReviewController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] PagingMetadata metadata)
     {
         _logger.LogInformation("fetching reviews");
-        var reviews = await _reviewRepository.GetAll();
+        var reviews = await _reviewRepository.GetAll(metadata);
         _logger.LogInformation("reviews were fetched successfully");
         return Ok(reviews);
     }

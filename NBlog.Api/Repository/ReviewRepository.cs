@@ -60,16 +60,20 @@ public class ReviewRepository : IReviewRepository
             AuthorId: review.AuthorId);
     }
 
-    public async Task<List<GetReviewDetails>> GetAll()
+    public async Task<List<GetReviewDetails>> GetAll(PagingMetadata metadata)
     {
-        return await _ctx.Reviews.Select(review => new GetReviewDetails(
-            review.Id,
-            review.Value,
-            review.Content,
-            review.PublishedAt,
-            review.EditedAt,
-            review.PostId,
-            review.AuthorId)).ToListAsync();
+        return await _ctx.Reviews
+            .OrderByDescending(p => p.PublishedAt)
+            .Skip((metadata.PageNumber - 1) * metadata.PageSize)
+            .Take(metadata.PageSize)
+            .Select(review => new GetReviewDetails(
+                review.Id,
+                review.Value,
+                review.Content,
+                review.PublishedAt,
+                review.EditedAt,
+                review.PostId,
+                review.AuthorId)).ToListAsync();
     }
 
     public async Task<GetReviewDetails> Get(long id)

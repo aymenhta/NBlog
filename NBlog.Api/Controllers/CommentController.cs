@@ -27,10 +27,10 @@ public class CommentController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] PagingMetadata metadata)
     {
         _logger.LogInformation("fetching comments");
-        var comments = await _commentRepository.GetAll();
+        var comments = await _commentRepository.GetAll(metadata);
         _logger.LogInformation("comments were fetched successfully");
         return Ok(comments);
     }

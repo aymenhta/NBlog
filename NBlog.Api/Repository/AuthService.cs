@@ -85,7 +85,7 @@ public class AuthService : IAuthService
             Issuer = _configuration["JWTKey:ValidIssuer"],
             Audience = _configuration["JWTKey:ValidAudience"],
             // Expires = DateTime.UtcNow.AddHours(tokenExpiryTimeInHour),
-            Expires = DateTime.UtcNow.AddMinutes(1),
+            Expires = DateTime.UtcNow.AddMinutes(10),
             SigningCredentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256),
             Subject = new ClaimsIdentity(claims)
         };

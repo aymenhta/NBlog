@@ -5,7 +5,7 @@ namespace NBlog.Api.Repository;
 
 public interface ICommentRepository
 {
-    Task<List<GetCommentDetails>> GetAll();
+    Task<List<GetCommentDetails>> GetAll(PagingMetadata metadata);
     Task<GetCommentDetails> Get(long id);
     Task<GetCommentDetails> Create(CreateCommentReq req, AppUser author);
     Task<List<GetCommentDetails>> GetCommentsForPost(long postId);

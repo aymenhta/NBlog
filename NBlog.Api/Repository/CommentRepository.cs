@@ -16,9 +16,12 @@ public class CommentRepository : ICommentRepository
         _postRepository = postRepository;
     }
 
-    public async Task<List<GetCommentDetails>> GetAll()
+    public async Task<List<GetCommentDetails>> GetAll(PagingMetadata metadata)
     {
         return await _ctx.Comments
+            .OrderByDescending(p => p.PublishedAt)
+            .Skip((metadata.PageNumber - 1) * metadata.PageSize)
+            .Take(metadata.PageSize)
             .Select(comment => new GetCommentDetails(
                 comment.Id,
                 comment.Content,

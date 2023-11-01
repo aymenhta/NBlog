@@ -14,9 +14,12 @@ public class PostRepository : IPostRepository
         _ctx = ctx;
     }
 
-    public async Task<List<GetPostDetails>> GetAll()
+    public async Task<List<GetPostDetails>> GetAll(PagingMetadata metadata)
     {
         return await _ctx.Posts
+            .OrderByDescending(p => p.PublishedAt)
+            .Skip((metadata.PageNumber - 1) * metadata.PageSize)
+            .Take(metadata.PageSize)
             .Select(post => new GetPostDetails(
                 post.Id,
                 post.Title,

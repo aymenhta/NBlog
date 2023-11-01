@@ -36,9 +36,9 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery] PagingMetadata metadata)
     {
-        var result = await _postRepository.GetAll();
+        var result = await _postRepository.GetAll(metadata);
         _logger.LogInformation("posts has been fetched successfully");
         return Ok(result);
     }
@@ -78,7 +78,7 @@ public class PostController : ControllerBase
 
         var author = await _userRepository.GetById(User.GetCurrentUserId());
         _logger.LogInformation("publishing post for user: {}", author.UserName);
-        var post = await _postRepository.Save(req, author!);
+        var post = await _postRepository.Save(req, author);
         _logger.LogInformation("post {} for user: {} has been published", post.Id, author.UserName);
         return Ok(post);
     }
