@@ -21,4 +21,5 @@ public class AppDbCtx : IdentityDbContext<AppUser, IdentityRole, string>
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Like> Likes { get; set; }
+    public DbSet<Category> Categories { get; set; }
 }

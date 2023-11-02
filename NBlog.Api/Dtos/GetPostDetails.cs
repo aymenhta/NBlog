@@ -6,4 +6,5 @@ public record GetPostDetails(
     string Content,
     DateTime PublishedAt,
     DateTime EditedAt,
-    string AuthorId);
+    string AuthorId,
+    string Category);

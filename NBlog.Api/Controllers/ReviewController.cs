@@ -49,7 +49,7 @@ public class ReviewController : ControllerBase
     {
         var author = await _userRepository.GetById(User.GetCurrentUserId());
 
-        _logger.LogInformation("adding review for user {}", author!.UserName);
+        _logger.LogInformation("adding review for user {}", author.UserName);
         var review = await _reviewRepository.Create(req, author);
         _logger.LogInformation("review {} was added successfully for author {}", review.Id, author.UserName);
         return Ok(review);
