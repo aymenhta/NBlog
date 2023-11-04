@@ -35,7 +35,7 @@ public class GlobalExceptionMiddleware
                 case ResourceNotFoundException:
                     await Results.Problem(
                             title: "you seem to have been made a mistake",
-                            statusCode: StatusCodes.Status400BadRequest,
+                            statusCode: StatusCodes.Status404NotFound,
                             extensions: new Dictionary<string, object?>
                             {
                                 { "traceId", Activity.Current?.Id }

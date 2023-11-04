@@ -18,7 +18,7 @@ public class CategoryRepository : ICategoryRepository
     {
         return await _ctx.Posts
             .Include(p => p.Category)
-            .Where(p => p.Category!.Name.Equals(name))
+            .Where(p => p.Category!.Name.Equals(name.ToUpper()))
             .OrderByDescending(p => p.PublishedAt)
             .Skip((metadata.PageNumber - 1) * metadata.PageSize)
             .Take(metadata.PageSize)
@@ -35,7 +35,7 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<GetCategoryDetails> Create(CreateCategoryReq req)
     {
-        var category = new Category { Name = req.Name.ToUpper() };
+        var category = new Category { Name = req.Name.ToUpper(), AddedAt = DateTime.Now, EditedAt = DateTime.Now };
         _ctx.Categories.Add(category);
         await _ctx.SaveChangesAsync();
         return new GetCategoryDetails(Id: category.Id, Name: category.Name, PostsCount: 0);
@@ -46,7 +46,8 @@ public class CategoryRepository : ICategoryRepository
         var category = await _ctx.Categories.FirstOrDefaultAsync(c => c.Id.Equals(id)) ??
                        throw new ResourceNotFoundException($"category {id} was not found :/");
 
-        category.Name = req.Name;
+        category.Name = req.Name.ToUpper();
+        category.EditedAt = DateTime.Now;
         await _ctx.SaveChangesAsync();
 
         return new GetCategoryDetails(Id: category.Id, Name: category.Name, PostsCount: 0);
