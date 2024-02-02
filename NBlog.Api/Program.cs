@@ -6,9 +6,14 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NBlog.Api.Categories;
+using NBlog.Api.Comments;
 using NBlog.Api.Entities;
+using NBlog.Api.Likes;
 using NBlog.Api.Middlewares;
-using NBlog.Api.Repository;
+using NBlog.Api.Posts;
+using NBlog.Api.Reviews;
+using NBlog.Api.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 var connString = builder.Configuration.GetConnectionString("dev") ??
