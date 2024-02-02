@@ -6,7 +6,7 @@ using NBlog.Api.Users;
 
 namespace NBlog.Api.Likes;
 
-public class LikeRepository(
+public sealed class LikeRepository(
     AppDbCtx ctx,
     UserManager<AppUser> userManager) : ILikeRepository
 {

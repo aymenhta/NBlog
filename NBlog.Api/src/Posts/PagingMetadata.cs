@@ -1,6 +1,6 @@
 namespace NBlog.Api.Posts;
 
-public class PagingMetadata
+public sealed class PagingMetadata
 {
     const int MaxPageSize = 50;
     private int _pageSize = 10;

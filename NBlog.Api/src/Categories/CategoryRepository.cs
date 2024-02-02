@@ -5,7 +5,7 @@ using NBlog.Api.Posts;
 
 namespace NBlog.Api.Categories;
 
-public class CategoryRepository(AppDbCtx ctx) : ICategoryRepository
+public sealed class CategoryRepository(AppDbCtx ctx) : ICategoryRepository
 {
     public async Task<List<GetPostDetails>> GetPosts(PagingMetadata metadata, string name)
     {

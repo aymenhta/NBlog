@@ -9,7 +9,7 @@ namespace NBlog.Api.Categories;
 [Route("/Api/V1/Categories")]
 [Authorize]
 [EnableRateLimiting("token")]
-public class CategoryController(
+public sealed class CategoryController(
     ICategoryRepository categoryRepository,
     ILogger<CategoryController> logger) : ControllerBase
 {

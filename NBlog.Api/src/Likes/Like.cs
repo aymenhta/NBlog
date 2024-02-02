@@ -3,7 +3,7 @@ using NBlog.Api.Users;
 
 namespace NBlog.Api.Likes;
 
-public class Like
+public sealed class Like
 {
     public Guid Id { get; set; }
     public AppUser? User { get; set; }

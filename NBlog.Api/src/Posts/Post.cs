@@ -5,7 +5,7 @@ using NBlog.Api.Users;
 
 namespace NBlog.Api.Posts;
 
-public class Post
+public sealed class Post
 {
     public long Id { get; set; }
     public string Title { get; set; } = string.Empty;

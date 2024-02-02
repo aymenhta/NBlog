@@ -7,7 +7,7 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace NBlog.Api.Users;
 
-public class AuthService(
+public sealed class AuthService(
     IConfiguration configuration,
     RoleManager<IdentityRole> roleManager,
     UserManager<AppUser> userManager) : IAuthService

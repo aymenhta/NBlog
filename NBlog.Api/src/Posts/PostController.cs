@@ -12,7 +12,7 @@ namespace NBlog.Api.Posts;
 [Route("/Api/V1/[controller]s")]
 [Authorize]
 [EnableRateLimiting("token")]
-public class PostController(
+public sealed class PostController(
     ICommentRepository commentRepository,
     ILikeRepository likeRepository,
     IPostRepository postRepository,

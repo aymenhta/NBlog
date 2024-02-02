@@ -7,7 +7,6 @@ public class GlobalExceptionMiddleware(
     ILogger<GlobalExceptionMiddleware> logger,
     RequestDelegate next)
 {
-
     public async Task InvokeAsync(HttpContext httpContext)
     {
         try
@@ -25,8 +24,9 @@ public class GlobalExceptionMiddleware(
             switch (ex)
             {
                 case ResourceNotFoundException:
+                    var id = httpContext.Request.Path.Value!.Split("/").Last();
                     await Results.Problem(
-                            title: "you seem to have been made a mistake",
+                            title: $"resource with the id '{id}' could not be found",
                             statusCode: StatusCodes.Status404NotFound,
                             extensions: new Dictionary<string, object?>
                             {

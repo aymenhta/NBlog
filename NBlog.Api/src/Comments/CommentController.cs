@@ -11,7 +11,7 @@ namespace NBlog.Api.Categories;
 [Route("/Api/V1/[controller]s")]
 [Authorize]
 [EnableRateLimiting("token")]
-public class CommentController(
+public sealed class CommentController(
     ICommentRepository commentRepository,
     ILogger<CommentController> logger,
     IUserRepository userRepository) : ControllerBase

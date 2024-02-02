@@ -5,7 +5,7 @@ using NBlog.Api.Users;
 
 namespace NBlog.Api.Reviews;
 
-public class Review
+public sealed class Review
 {
     public long Id { get; set; }
 

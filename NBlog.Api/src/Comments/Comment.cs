@@ -4,7 +4,7 @@ using NBlog.Api.Users;
 
 namespace NBlog.Api.Comments;
 
-public class Comment
+public sealed class Comment
 {
     public long Id { get; set; }
     public string Content { get; set; } = string.Empty;

@@ -2,7 +2,7 @@ using NBlog.Api.Posts;
 
 namespace NBlog.Api.Categories;
 
-public class Category
+public sealed class Category
 {
     public long Id { get; set; }
     public string Name { get; set; } = default!;

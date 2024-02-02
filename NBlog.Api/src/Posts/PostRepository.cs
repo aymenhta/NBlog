@@ -5,7 +5,7 @@ using NBlog.Api.Users;
 
 namespace NBlog.Api.Posts;
 
-public class PostRepository(AppDbCtx ctx) : IPostRepository
+public sealed class PostRepository(AppDbCtx ctx) : IPostRepository
 {
 
     public async Task<List<GetPostDetails>> GetAll(PagingMetadata metadata)

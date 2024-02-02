@@ -10,7 +10,7 @@ namespace NBlog.Api.Controllers;
 [EnableRateLimiting("token")]
 [ApiController]
 [Route("/Api/V1/[controller]s")]
-public class UserController(
+public sealed class UserController(
     ILikeRepository likeRepository,
     IUserRepository userRepository,
     ILogger<UserController> logger) : ControllerBase

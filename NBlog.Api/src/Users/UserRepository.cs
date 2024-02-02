@@ -4,7 +4,7 @@ using NBlog.Api.Exceptions;
 
 namespace NBlog.Api.Users;
 
-public class UserRepository(UserManager<AppUser> userManager) : IUserRepository
+public sealed class UserRepository(UserManager<AppUser> userManager) : IUserRepository
 {
 
     public async Task<AppUser> GetByName(string name)

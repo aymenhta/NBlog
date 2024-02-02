@@ -10,7 +10,7 @@ namespace NBlog.Api.Reviews;
 [Route("/Api/V1/[controller]s")]
 [Authorize]
 [EnableRateLimiting("token")]
-public class ReviewController(
+public sealed class ReviewController(
     IReviewRepository reviewRepository,
     IUserRepository userRepository,
     ILogger<ReviewController> logger) : ControllerBase

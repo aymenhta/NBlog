@@ -10,12 +10,9 @@ using NBlog.Api.Users;
 
 namespace NBlog.Api.Entities;
 
-public class AppDbCtx : IdentityDbContext<AppUser, IdentityRole, string>
+public class AppDbCtx(DbContextOptions<AppDbCtx> options) 
+    : IdentityDbContext<AppUser, IdentityRole, string>(options)
 {
-    public AppDbCtx(DbContextOptions<AppDbCtx> options) : base(options)
-    {
-    }
-
 #nullable disable
     public DbSet<Post> Posts { get; set; }
     public DbSet<Comment> Comments { get; set; }

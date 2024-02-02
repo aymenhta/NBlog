@@ -6,7 +6,7 @@ using NBlog.Api.Users;
 
 namespace NBlog.Api.Reviews;
 
-public class ReviewRepository(AppDbCtx ctx) : IReviewRepository
+public sealed class ReviewRepository(AppDbCtx ctx) : IReviewRepository
 {
 
     public async Task<GetReviewDetails> Create(CreateReviewReq req, AppUser author)

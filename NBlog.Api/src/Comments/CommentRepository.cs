@@ -7,7 +7,7 @@ using NBlog.Api.Users;
 
 namespace NBlog.Api.Comments;
 
-public class CommentRepository(AppDbCtx ctx) : ICommentRepository
+public sealed class CommentRepository(AppDbCtx ctx) : ICommentRepository
 {
     public async Task<List<GetCommentDetails>> GetAll(PagingMetadata metadata)
     {
