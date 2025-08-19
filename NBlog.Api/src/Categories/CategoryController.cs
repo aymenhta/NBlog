@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -11,6 +12,7 @@ namespace NBlog.Api.Categories;
 [EnableRateLimiting("token")]
 public sealed class CategoryController(
     ICategoryRepository categoryRepository,
+    IValidator<CreateCategoryReq> createCategoryValidator,
     ILogger<CategoryController> logger) : ControllerBase
 {
 
@@ -35,23 +37,25 @@ public sealed class CategoryController(
     [HttpPost]
     public async Task<IActionResult> Create(CreateCategoryReq req)
     {
-        if (!ModelState.IsValid)
+        var vResult = await createCategoryValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
         {
-            logger.LogWarning("failed validation");
-            return BadRequest();
+            logger.LogWarning("validation failed when creating a new category");
+            return BadRequest(vResult.Errors);
         }
 
-        var result = await categoryRepository.Create(req);
-        return Ok(result);
+        var category = await categoryRepository.Create(req);
+        return Ok(category);
     }
 
     [HttpPut("{id:long}")]
     public async Task<IActionResult> Edit(long id, CreateCategoryReq req)
     {
-        if (!ModelState.IsValid)
+        var vResult = await createCategoryValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
         {
-            logger.LogWarning("failed validation");
-            return BadRequest();
+            logger.LogWarning("validation failed when editing category {}", id);
+            return BadRequest(vResult.Errors);
         }
 
         var result = await categoryRepository.Edit(req, id);

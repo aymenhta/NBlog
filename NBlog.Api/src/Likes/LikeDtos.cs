@@ -1,5 +1,3 @@
-using NBlog.Api.Likes;
-
 namespace NBlog.Api.Likes;
 
 public record GetPostLikesCountRes(
@@ -10,3 +8,5 @@ public record GetUserLikesCountRes(
 
 public record ReactReq(
     long PostId, LikeAction Action);
+
+

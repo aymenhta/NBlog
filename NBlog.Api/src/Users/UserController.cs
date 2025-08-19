@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -44,8 +45,15 @@ public sealed class UserController(
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> Follow([FromBody] FollowReq req)
+    public async Task<IActionResult> Follow(
+        [FromServices] IValidator<FollowReq> reqValidator,
+        [FromBody] FollowReq req)
     {
+        var vResult = await reqValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
+        {
+            return BadRequest(vResult.Errors);
+        }
         var action = await userRepository.Follow(req.UserName, req.OtherUserName);
         return action switch
         {

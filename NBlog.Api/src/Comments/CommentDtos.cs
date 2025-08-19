@@ -10,6 +10,4 @@ public record GetCommentDetails(
     long PostId,
     string AuthorId);
 
-public record CreateCommentReq(
-    [Required] [MaxLength(200)] string Content,
-    long PostId);
+public record CreateCommentReq(string Content, long PostId);

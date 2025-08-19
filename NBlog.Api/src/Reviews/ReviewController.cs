@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -13,6 +14,7 @@ namespace NBlog.Api.Reviews;
 public sealed class ReviewController(
     IReviewRepository reviewRepository,
     IUserRepository userRepository,
+    IValidator<CreateReviewReq> reviewValidator,
     ILogger<ReviewController> logger) : ControllerBase
 {
 
@@ -37,6 +39,13 @@ public sealed class ReviewController(
     [HttpPost]
     public async Task<IActionResult> Create(CreateReviewReq req)
     {
+        var vResult = await reviewValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
+        {
+            logger.LogWarning("validation failed when adding a new review");
+            return BadRequest(vResult.Errors);
+        }
+    
         var author = await userRepository.GetById(User.GetCurrentUserId());
 
         logger.LogInformation("adding review for user {}", author.UserName);
@@ -48,6 +57,13 @@ public sealed class ReviewController(
     [HttpPut("{id:long}")]
     public async Task<IActionResult> Edit(long id, CreateReviewReq req)
     {
+        var vResult = await reviewValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
+        {
+            logger.LogWarning("validation failed when editing review {}", id);
+            return BadRequest(vResult.Errors);
+        }
+
         logger.LogInformation("editing review {}", id);
         var updatedReview = await reviewRepository.Edit(id, req);
         logger.LogInformation("review {} was edited successfully", id);

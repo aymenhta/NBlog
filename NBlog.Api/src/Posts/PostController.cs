@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -18,6 +19,8 @@ public sealed class PostController(
     IPostRepository postRepository,
     IReviewRepository reviewRepository,
     IUserRepository userRepository,
+    IValidator<CreatePostReq> createPostValidator,
+    IValidator<ReactReq> reactToPostValidator,
     ILogger<PostController> logger) : ControllerBase
 {
 
@@ -56,10 +59,11 @@ public sealed class PostController(
     [HttpPost]
     public async Task<IActionResult> Create(CreatePostReq req)
     {
-        if (!ModelState.IsValid)
+        var vResult = await createPostValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
         {
-            logger.LogWarning("failed validation");
-            return BadRequest(ModelState);
+            logger.LogWarning("validation failed when creating a post");
+            return BadRequest(vResult.Errors);
         }
 
         var author = await userRepository.GetById(User.GetCurrentUserId());
@@ -72,10 +76,11 @@ public sealed class PostController(
     [HttpPut("{id:long}")]
     public async Task<IActionResult> Edit(long id, CreatePostReq req)
     {
-        if (!ModelState.IsValid)
+        var vResult = await createPostValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
         {
-            logger.LogWarning("failed validation");
-            return BadRequest(ModelState);
+            logger.LogWarning("validation failed when editing post {}", id);
+            return BadRequest(vResult.Errors);
         }
 
         logger.LogInformation("editing post {}", id);
@@ -96,6 +101,12 @@ public sealed class PostController(
     [HttpPost("React")]
     public async Task<IActionResult> Like([FromBody] ReactReq req)
     {
+        var vResult = await reactToPostValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
+        {
+            return BadRequest(vResult.Errors);    
+        }
+        
         var user = await userRepository.GetById(User.GetCurrentUserId());
         logger.LogInformation("reacting to post {} by user {}", req.PostId, user.UserName);
         var result = await likeRepository.Like(req.Action, req.PostId, user.Id);

@@ -2,17 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NBlog.Api.Users;
 
-public record AuthResult(
-    string Username,
-    string Token);
 
-public record LoginModel(
-    [Required(ErrorMessage = "Username is required")]
-    string Username,
-    [Required(ErrorMessage = "Password is required")]
-    string Password);
+public record AuthResult(string Username, string Token);
 
-public record RegistrationModel(
-    [Required] string Username,
-    [Required][EmailAddress] string Email,
-    [Required] string Password);
+public record LoginModel(string Username, string Password);
+
+public record RegistrationModel(string Username, string Email, string Password);
+
+

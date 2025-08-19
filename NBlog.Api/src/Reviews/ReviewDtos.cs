@@ -11,7 +11,4 @@ public record GetReviewDetails(
     long PostId,
     string AuthorId);
 
-public record CreateReviewReq(
-    [Required] string Content,
-    [Required][Range(1, 10)] int Value,
-    [Required] long PostId);
+public record CreateReviewReq(string Content, int Value, long PostId);

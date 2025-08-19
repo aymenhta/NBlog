@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -13,6 +14,7 @@ namespace NBlog.Api.Categories;
 [EnableRateLimiting("token")]
 public sealed class CommentController(
     ICommentRepository commentRepository,
+    IValidator<CreateCommentReq> commentValidator,
     ILogger<CommentController> logger,
     IUserRepository userRepository) : ControllerBase
 {
@@ -38,11 +40,12 @@ public sealed class CommentController(
     [HttpPost]
     public async Task<IActionResult> Create(CreateCommentReq req)
     {
-        if (!ModelState.IsValid)
+        var vResult = await commentValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
         {
-            logger.LogWarning("failed validation");
-            return BadRequest(ModelState);
-        }
+            logger.LogWarning("validation failed when adding a new comment");
+            return BadRequest(vResult.Errors);
+        } 
 
         var author = await userRepository.GetById(User.GetCurrentUserId());
 
@@ -56,11 +59,12 @@ public sealed class CommentController(
     [HttpPut("{id:long}")]
     public async Task<IActionResult> Edit(long id, CreateCommentReq req)
     {
-        if (!ModelState.IsValid)
+        var vResult = await commentValidator.ValidateAsync(req);
+        if (!vResult.IsValid)
         {
-            logger.LogWarning("failed validation");
-            return BadRequest(ModelState);
-        }
+            logger.LogWarning("validation failed when editing comment {}", id);
+            return BadRequest(vResult.Errors);
+        } 
 
         logger.LogInformation("updating comment {}", id);
         var updatedComment = await commentRepository.Edit(id, req);

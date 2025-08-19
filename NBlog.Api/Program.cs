@@ -1,5 +1,6 @@
 using System.Text;
 using System.Threading.RateLimiting;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
@@ -104,12 +105,26 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
 builder.Services.AddMemoryCache(options => { });
 
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IValidator<CreatePostReq>, CreatePostValidator>();
+
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IValidator<CreateCommentReq>, CreateCommentValidator>();
+
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IValidator<CreateReviewReq>, CreateReviewValidator>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IValidator<LoginModel>, LoginValidator>();
+builder.Services.AddScoped<IValidator<RegistrationModel>, RegistrationValidator>();
+
 builder.Services.AddScoped<ILikeRepository, LikeRepository>();
+builder.Services.AddScoped<IValidator<ReactReq>, ReactReqValidator>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IValidator<FollowReq>, FollowReqValidator>();
+
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IValidator<CreateCategoryReq>, CreateCategoryValidator>();
 
 var app = builder.Build();
 

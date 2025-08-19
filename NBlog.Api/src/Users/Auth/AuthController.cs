@@ -1,7 +1,9 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
 namespace NBlog.Api.Users;
+
 
 [ApiController]
 [Route("/Api/V1/[controller]s")]
@@ -12,12 +14,15 @@ public sealed class AuthController(
 {
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> Register(RegistrationModel model)
+    public async Task<IActionResult> Register(
+        [FromServices] IValidator<RegistrationModel> reqValidator,
+        [FromBody] RegistrationModel model)
     {
-        if (!ModelState.IsValid)
+        var vResult = await reqValidator.ValidateAsync(model);
+        if (!vResult.IsValid)
         {
-            logger.LogWarning("failed validation");
-            return BadRequest(ModelState);
+            logger.LogWarning("failed validation when adding a new user");
+            return BadRequest(vResult.Errors);
         }
 
         var (idx, msg) = await authService.Registration(model, "USER");
@@ -32,12 +37,15 @@ public sealed class AuthController(
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> Login(LoginModel model)
+    public async Task<IActionResult> Login(
+        [FromServices] IValidator<LoginModel> reqValidator,
+        [FromBody] LoginModel model)
     {
-        if (!ModelState.IsValid)
+        var vResult = await reqValidator.ValidateAsync(model);
+        if (!vResult.IsValid)
         {
-            logger.LogWarning("failed validation");
-            return BadRequest(ModelState);
+            logger.LogWarning("failed validation when adding a new user");
+            return BadRequest(vResult.Errors);
         }
 
         var (idx, result) = await authService.Login(model);
